@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>鋼のオカン計算ツール</title>
+  <script>
+    const metalOptions = {
+      "SS400": ["丸", "平版", "四角"],
+      "SS磨き": ["丸", "平版", "四角", "六角"],
+      "S50C": ["平版", "四角"],
+      "S45C": ["丸"],
+      "S45CH": ["丸"],
+      "S45C磨き": ["丸", "平版", "四角", "六角"],
+      "SCM415": ["丸"],
+      "SCM435": ["丸"],
+      "SCM440": ["丸"],
+      "SK3": ["丸"],
+      "SKS3": ["丸", "平版", "四角"],
+      "SKD11": ["丸"],
+      "SKD61": ["丸"],
+      "SCM440H": ["丸"],
+      "S55C": ["丸"],
+      "S25C": ["丸"],
+      "SUJ2": ["丸"]
+    };
+
+    const shapeOptions = {
+      "丸": [
+        { size: 13, price: 120 },
+        { size: 16, price: 130 },
+        { size: 19, price: 140 },
+        { size: 22, price: 150 },
+        { size: 26, price: 160 },
+        { size: 28, price: 170 },
+        { size: 32, price: 180 },
+        { size: 36, price: 190 },
+        { size: 38, price: 200 },
+        { size: 42, price: 210 },
+        { size: 44, price: 220 },
+        { size: 46, price: 230 },
+        { size: 48, price: 240 },
+        { size: 50, price: 250 },
+        { size: 55, price: 260 },
+        { size: 60, price: 270 },
+        { size: 65, price: 280 },
+        { size: 70, price: 290 },
+        { size: 75, price: 300 },
+        { size: 80, price: 310 },
+        { size: 85, price: 320 },
+        { size: 90, price: 330 },
+        { size: 95, price: 340 },
+        { size: 100, price: 350 },
+        { size: 110, price: 360 },
+        { size: 120, price: 370 },
+        { size: 262, price: 380 }
+      ],
+      "平版": [
+        { size: 3, price: 100 },
+        { size: 4.5, price: 110 },
+        { size: 6, price: 120 },
+        { size: 9, price: 130 },
+        { size: 12, price: 140 },
+        { size: 16, price: 150 },
+        { size: 19, price: 160 },
+        { size: 22, price: 170 },
+        { size: 25, price: 180 },
+        { size: 28, price: 190 },
+        { size: 32, price: 200 },
+        { size: 36, price: 210 },
+        { size: 38, price: 220 }
+      ],
+      "四角": [
+        { size: 9.52, price: 90 },
+        { size: 12.7, price: 100 },
+        { size: 16, price: 110 },
+        { size: 19, price: 120 },
+        { size: 22, price: 130 },
+        { size: 25, price: 140 },
+        { size: 28, price: 150 },
+        { size: 32, price: 160 },
+        { size: 34, price: 170 },
+        { size: 36, price: 180 },
+        { size: 38, price: 190 },
+        { size: 44, price: 200 },
+        { size: 50, price: 210 },
+        { size: 55, price: 220 },
+        { size: 65, price: 230 },
+        { size: 90, price: 240 },
+        { size: 100, price: 250 },
+        { size: 110, price: 260 }
+      ],
+      "六角": [
+        { size: 5, price: 80 },
+        { size: 6, price: 90 },
+        { size: 7, price: 100 },
+        { size: 8, price: 110 },
+        { size: 9, price: 120 },
+        { size: 10, price: 130 },
+        { size: 11, price: 140 },
+        { size: 12, price: 150 },
+        { size: 13, price: 160 },
+        { size: 14, price: 170 },
+        { size: 16, price: 180 },
+        { size: 17, price: 190 },
+        { size: 19, price: 200 },
+        { size: 21, price: 210 },
+        { size: 22, price: 220 },
+        { size: 23, price: 230 },
+        { size: 24, price: 240 },
+        { size: 26, price: 250 },
+        { size: 27, price: 260 },
+        { size: 29, price: 270 },
+        { size: 30, price: 280 },
+        { size: 32, price: 290 },
+        { size: 35, price: 300 },
+        { size: 36, price: 310 },
+        { size: 38, price: 320 },
+        { size: 41, price: 330 },
+        { size: 46, price: 340 },
+        { size: 50, price: 350 },
+        { size: 54, price: 360 },
+        { size: 55, price: 370 },
+        { size: 58, price: 380 },
+        { size: 60, price: 390 },
+        { size: 63, price: 400 },
+        { size: 65, price: 410 },
+        { size: 67, price: 420 },
+        { size: 70, price: 430 },
+        { size: 71, price: 440 },
+        { size: 75, price: 450 },
+        { size: 77, price: 460 },
+        { size: 80, price: 470 },
+        { size: 85, price: 480 },
+        { size: 90, price: 490 },
+        { size: 95, price: 500 },
+        { size: 100, price: 510 },
+        { size: 115, price: 520 }
+      ]
+    };
+
+    function populateShapes() {
+      const metalSelect = document.getElementById("metal").value;
+      const shapeSelect = document.getElementById("shape");
+      shapeSelect.innerHTML = "";
+      metalOptions[metalSelect].forEach(shape => {
+        const option = document.createElement("option");
+        option.value = shape;
+        option.textContent = shape;
+        shapeSelect.appendChild(option);
+      });
+    }
+
+    function populateSizes() {
+      const shape = document.getElementById("shape").value;
+      const sizeSelect = document.getElementById("size");
+      sizeSelect.innerHTML = "";
+      shapeOptions[shape].forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.size;
+        option.textContent = `${item.size}mm (¥${item.price})`;
+        sizeSelect.appendChild(option);
+      });
+    }
+
+    function calculatePrice() {
+      const shape = document.getElementById("shape").value;
+      const size = parseInt(document.getElementById("size").value);
+      const sizeData = shapeOptions[shape].find(item => item.size === size);
+      document.getElementById("result").textContent = `計算結果: ¥${sizeData ? sizeData.price : 0}`;
+    }
+  </script>
+</head>
+<body>
+  <h1>鋼のオカン計算ツール</h1>
+  <label for="metal">金属の種類:</label>
+  <select id="metal" onchange="populateShapes()">
+    <option value="SS400">SS400</option>
+    <option value="SS磨き">SS磨き</option>
+    <option value="S50C">S50C</option>
+    <option value="S45C">S45C</option>
+    <option value="S45CH">S45CH</option>
+    <option value="S45C磨き">S45C磨き</option>
+    <option value="SCM415">SCM415</option>
+    <option value="SCM435">SCM435</option>
+    <option value="SCM440">SCM440</option>
+    <option value="SK3">SK3</option>
+    <option value="SKS3">SKS3</option>
+    <option value="SKD11">SKD11</option>
+    <option value="SKD61">SKD61</option>
+    <option value="SCM440H">SCM440H</option>
+    <option value="S55C">S55C</option>
+    <option value="S25C">S25C</option>
+    <option value="SUJ2">SUJ2</option>
+  </select>
+
+  <br><br>
+
+  <label for="shape">形状:</label>
+  <select id="shape" onchange="populateSizes()">
+    <!-- Populate based on metal selection -->
+  </select>
+
+  <br><br>
+
+  <label for="size">サイズ:</label>
+  <select id="size" onchange="calculatePrice()">
+    <!-- Populate based on shape selection -->
+  </select>
+
+  <br><br>
+
+  <div id="result">計算結果: ¥0</div>
+</body>
+</html>
